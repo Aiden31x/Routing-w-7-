@@ -1,47 +1,48 @@
-import {lazy} from 'react'
-import {BrowserRouter,Routes,Route,useNavigate} from 'react-router-dom'
+
+import { useContext, useState } from 'react'
 import './App.css'
+import { CountContext } from './Components/context';
  
-const Landing = lazy(()=> import('./Components/Landing')) 
-const Dashboard = lazy(()=> import('./Components/Dashboard'))
+
 
 function App() {
+  const [count,setCount]= useState(0);
 
 
-  return (
-    <div>
-    <BrowserRouter>
-    <AppBar />
-    <Routes>
-      <Route path='/' element={<Landing />}></Route>
-      <Route path='/dashboard' element={<Dashboard />}></Route>
-    </Routes>
-     
-      
-    </BrowserRouter>
-    </div>
+  return(
+  <div>
+    <CountContext.Provider value={count}>
+    <Count  setCount={setCount} />
+    </CountContext.Provider>
+  </div>
 
-  )
+)
+
 }
 
-function AppBar(){
-  const navigate=useNavigate();
-
-  return <div>
-    <div>
-      <button onClick={()=>{
-        navigate("/")
-      }}>Landing</button>
-
-      <button onClick={()=>{
-        navigate("/dashboard")
-      }}>Dashboard</button>
-
-
-    </div>
-
-
+function Count({setCount}){
+  return<div>
+    <CountRenderer  />
+    <Buttons  setCount={setCount} />
   </div>
- 
+}
+
+function CountRenderer(){
+  const count=useContext(CountContext);
+  return <div>
+    {count}
+  </div>
+}
+function Buttons({setCount}){
+  const count=useContext(CountContext);
+  return <div>
+    <button onClick={()=>{
+      setCount(count+1)
+      }}> Increase </button>
+
+    <button onClick={()=>{
+      setCount(count-1)
+    }}>Decrease </button>
+  </div>
 }
 export default App
